@@ -4,7 +4,8 @@ const _=require("lodash")
 const { GraphQLObjectType, 
     GraphQLString, 
     GraphQLSchema,
-    GraphQLID
+    GraphQLID,
+    GraphQLInt
  } = graphql
 
 // dummy data
@@ -14,6 +15,13 @@ var books = [
     {name: "The Long Earth",genre: "Sci-Fi", id: "3"}
 ]
 
+// dummy authors
+var authors = [
+    {name: "Isaac Obuya", age: 25, id: "1"},
+    {name: "John Doe", age: 32, id: "2"},
+    {name: "Chniua Achebe", age: 40, id: "3"}
+]
+
 // defining type
 const BookType = new GraphQLObjectType({
     name: 'Book',
@@ -21,6 +29,15 @@ const BookType = new GraphQLObjectType({
         id: { type: GraphQLID },
         name: { type: GraphQLString},
         genre: { type: GraphQLString }
+    })
+})
+
+const AuthorType = new GraphQLObjectType({
+    name: 'Author',
+    fields: () => ({
+        id: { type: GraphQLID },
+        name: { type: GraphQLString },
+        age: { type: GraphQLInt}
     })
 })
 
@@ -35,6 +52,14 @@ const RootQuery = new GraphQLObjectType({
                 // code to get any data from the data source e.g. db
                 // args.id - we have access to this
                 return _.find(books,{id: args.id})
+            }
+        },
+        author: {
+            type: AuthorType,
+            args: { id: {type: GraphQLID }},
+            resolve(parent, args) {
+                // find author based on id
+                return _.find(authors, {id: args.id})
             }
         }
     }
